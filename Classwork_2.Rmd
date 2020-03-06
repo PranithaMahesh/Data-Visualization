@@ -1,0 +1,33 @@
+---
+title: "Classwork_06"
+author: "PranithaMahesh"
+date: "05/03/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# IN CLASS EXERCISE
+
+```{r}
+library(ggrepel)
+
+elections_historic
+
+
+```
+
+
+```{r fig.width=15}
+ggplot(data= elections_historic, aes(x=popular_pct, y= ec_pct)) + 
+  geom_point() + 
+  labs(title = 'Presidential Elections: Popular & Electoral College Marings', subtitle = '1824 - 2016', x = "Winner's share of Popular Vote", y = "Winner's share of Electorial College", caption = "Data for 2016 are provisional.") + 
+  geom_vline(xintercept=.50, color = 'gray50', size = 1.5, alpha = .4) +
+  geom_hline(yintercept=.50, color = 'gray50', size = 1.5, alpha = .4) +
+  scale_x_continuous(labels = scales::percent) +
+  scale_y_continuous(labels = scales::percent) + 
+  geom_text_repel(aes(label = winner_label)) 
+
+```

@@ -1,0 +1,82 @@
+---
+title: "DataVisualization_HW4"
+author: "PranithaMahesh"
+date: "19/02/2020"
+output: html_document
+---
+
+```{r}
+install.packages("tidyverse")
+library(tidyverse)
+```
+
+```{r}
+#1. Load mortality data .csv
+mortalitydata <- read.csv("C:\\Users\\Shimsha\\Desktop\\DataVisualization\\ClassWork\\mortality_data.csv", header = TRUE)
+```
+
+```{r}
+#Check if mortality data is loaded
+head(mortalitydata)
+```
+```{r}
+#2.scatter plot to show mortality rate by age
+ggplot(data = mortalitydata, mapping = aes(x = attage, y= actual_mort)) + geom_point()
+```
+```{r}
+#3.black points are close together and overlapping. set the color of the points to a light gray so we can tell when points are overlapping.
+
+ggplot(data = mortalitydata, mapping = aes(x = attage, y= actual_mort)) + geom_point(colour = "Light grey")
+  
+```
+
+```{r}
+#4.create a graph without the data points, but rather with a smooth line with a ribbon that shows the standard error
+ggplot(data = mortalitydata, mapping = aes(x = attage, y= actual_mort)) + 
+  geom_smooth()
+# does standard error to this apear reasonable ? why not ? 
+#showing the Standard error of the groups indicates a measure of precision that is not relevant to the research. The important thing to be shown here would be the differences of actual and expected mortality data.Hence its not reasonable to show standard error.
+```
+
+```{r}
+#5.Edit the graph so that the standard error ribbon is removed.
+ggplot(data = mortalitydata, mapping = aes(x = attage, y= actual_mort)) + 
+  geom_smooth(size = 0.9, se = FALSE)
+```
+
+```{r}
+#6.add the scatterplot points back to the graph with the line.
+ggplot(data = mortalitydata, mapping = aes(x = attage, y= actual_mort)) + 
+  geom_point(colour = "Light grey") +
+  geom_smooth(size = 0.9, se = FALSE)
+```
+
+```{r}
+#7.Make scatterplots to have a blue color and the smooth line an orange color
+ggplot(data = mortalitydata, mapping = aes(x = attage, y= actual_mort)) + 
+  geom_point(colour = "blue") +
+  geom_smooth( size = 0.9 , color = "orange", se = FALSE)
+```
+
+```{r}
+#8.What if we want the points colored by smoker?
+ggplot(data = mortalitydata, mapping = aes(x = attage, y= actual_mort, colour = factor(smoker))) + 
+  geom_point() +
+  geom_smooth( size = 0.9 , color = "orange", se = FALSE)
+```
+
+```{r}
+#9.What if we want shape of the points to change by smoker?
+ggplot(data = mortalitydata, mapping = aes(x = attage, y= actual_mort, colour = factor(smoker), shape = factor(smoker))) + 
+  geom_point() +
+  geom_smooth( size = 0.9 , color = "orange", se = FALSE)
+```
+
+```{r}
+#10.Change the color of the lines and points vary by smoker status. Are the result of this surprising? Any insights?
+ggplot(data = mortalitydata, mapping = aes(x = attage, y= actual_mort, colour = factor(smoker), shape = factor(smoker))) + 
+  geom_point() +
+  geom_smooth( size = 0.9, se = FALSE )
+#yes, it is surprising that the graph is actually showing 3 sets which can also be used to read data based on sex column.
+```
+

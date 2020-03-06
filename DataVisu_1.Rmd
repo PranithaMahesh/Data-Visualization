@@ -1,0 +1,352 @@
+---
+title: "DataVisualization_1"
+output: html_document
+---
+
+
+```{r}
+#tidyverse
+
+install.packages("tidyverse")
+library(tidyverse)
+```
+#some function 
+
+*filter()
+*arrange()
+*group_by()
+*mutate()
+*summarise()
+
+```{r}
+head(mtcars)
+```
+# Filter()
+
+```{r}
+#select all cars cyl=6, mpg > 20, gear = 4
+# %>% - ctrl+shft+m - dplyr library
+# other way of doing it with out using library
+##mtcars[(mtcar$cyl == 6 &(mtcars$mpg > 20) & (mtcars$gear ==4)]
+```
+
+```{r}
+mtcars %>%
+  filter(cyl == 6, mpg > 20, gear == 4)
+```
+
+
+```{r}
+install.packages("nycflights13")
+library(nycflights13)
+```
+
+```{r}
+head(flights)
+```
+
+
+```{r}
+write.csv(flights,file = "flights.csv")
+```
+
+```{r}
+write.csv()
+```
+
+```{r}
+# visualization
+
+gapminder <- read.csv("gapMinderDataFiveYear.csv")
+```
+
+
+```{r}
+head(gapminder)
+```
+
+```{r}
+ggplot(data = gapminder)
+
+```
+```{r}
+ggplot(data = gss_sm)
+```
+
+
+```{r}
+names(gapminder)
+```
+
+
+
+
+```{r}
+#Wrong code 
+ggplot(data = gapminder, mapping = aes(x = gdpPercap, y= lifeExp, color = "Green")) + geom_point()
+
+```
+
+```{r}
+ggplot(data = gapminder, mapping = aes(x = gdpPercap, y= lifeExp)) + geom_point(color = "Purple") 
+
+```
+```{r}
+ggplot(data = gapminder, mapping = aes(x = gdpPercap, y= lifeExp, color = continent)) + geom_point() 
+
+```
+```{r}
+gapminder %>% 
+  arrange(desc(gdpPercap))
+```
+
+
+```{r}
+gapminder %>% 
+  arrange(gdpPercap)
+```
+```{r}
+ggplot(data = gapminder, mapping = aes(x = gdpPercap, y= lifeExp, color = continent)) + geom_point(alpha = 10)
+
+```
+```{r}
+ggplot(data = gapminder, mapping = aes(x = gdpPercap, y= lifeExp)) + 
+  geom_point()+ 
+  geom_smooth( size = 0.9 , color = "purple", se = FALSE) +
+  scale_x_continuous(labels = scales::dollar)
+  
+```
+
+```{r}
+#Check out the data
+library(ggplot2)
+library(gapminder)
+library(socviz)
+
+```
+```{r}
+#Check data 
+head(gapminder)
+
+```
+```{r}
+gapminder
+```
+
+```{r}
+# line plot : year by gdpPercap
+# it has more vertical line because ggplot has multiple gdp's for one year
+ggplot(data= gapminder, aes(x=year, y=gdpPercap)) +
+  geom_point()
+```
+```{r}
+# above with line 
+ggplot(data= gapminder, aes(x=year, y=gdpPercap)) +
+  geom_line()
+```
+```{r}
+#unique country
+unique(gapminder$country)
+```
+
+```{r}
+length(unique(gapminder$country))
+```
+
+```{r}
+# order with country
+ggplot(data= gapminder, aes(x=year, y=gdpPercap)) +
+  geom_line(aes(group = country))
+```
+
+```{r}
+# split by continent to see it better
+ggplot(data= gapminder, aes(x=year, y=gdpPercap)) +
+  geom_line(aes(group = country)) +
+  facet_wrap( vars(continent)) # facet_wrap(Vars(continent)) = facet_wrap(~continent)
+```
+```{r}
+# to aline in one row
+ggplot(data= gapminder, aes(x=year, y=gdpPercap)) +
+  geom_line(aes(group = country)) +
+  facet_wrap( ~continent, nrow = 1)
+```
+
+```{r}
+# make a country trends a light grey color
+ggplot(data= gapminder, aes(x=year, y=gdpPercap, colour = "light Grey")) +
+  geom_line(aes(group = country ), colour = "Light grey") +
+  facet_wrap( ~continent, nrow = 1)
+```
+```{r}
+#y axis to show dollar
+ggplot(data= gapminder, aes(x=year, y=gdpPercap, colour = "light Grey")) +
+  geom_line(aes(group = country ), colour = "Light grey") +
+  facet_wrap( ~continent, nrow = 1) +
+  scale_y_continuous(labels = scales::dollar)
+
+```
+```{r fig.width=11}
+ggplot(data= gapminder, aes(x=year, y=gdpPercap, colour = "Grey")) +
+  geom_line(aes(group = country ), colour = "Light grey") +
+  facet_wrap( ~continent, nrow = 1) +
+  scale_y_log10(labels = scales::dollar)
+```
+```{r fig.width=11}
+#Add labels 
+# x= year , y = "GDP per capita(log)", title =GDP per capita on five continents , subtitle, caption
+
+ggplot(data= gapminder, aes(x=year, y= gdpPercap, colour = "Grey")) +
+  geom_line(aes(group = country ), colour = "Light grey") +
+  facet_wrap( ~continent, nrow = 1) +
+  scale_y_log10(labels = scales::dollar)+
+  labs(x="Year",
+       y = " GDP per Capita(log)",
+       title = "GDP per capita on five continents",
+       subtitle = "goes in here",
+       caption = "goesin here")
+```
+```{r}
+#take a look at the gss_sm data
+gss_sm = read.csv("gss_sm.csv")
+head(gss_sm)
+```
+
+```{r}
+#Check nas's 
+sum(is.na(gss_sm$age))
+```
+```{r warning=False}
+# turn off warning
+# scatter plot
+ggplot(data=gss_sm, aes(x=age, y = childs)) +
+  geom_point()
+
+```
+
+```{r warning=False}
+#wrap by sex 
+ggplot(data=gss_sm, aes(x=age, y = childs)) +
+  geom_point() +
+  facet_wrap(~sex)
+```
+```{r warning=FALSE}
+ggplot(data=gss_sm, aes(x=age, y = childs)) +
+  geom_point() +
+  #facet_wrap(~sex) +
+  facet_grid(sex~race)
+```
+```{r warning=FALSE}
+#break by education + bad visualization
+ggplot(data=gss_sm, aes(x=age, y = childs)) +
+  geom_point() +
+#facet_wrap(~sex) +
+  facet_grid(sex~race + degree)
+
+```
+```{r}
+head(mpg)
+```
+
+```{r}
+# Excersise 1 
+#1.  For the mpg data set, plot a sactter plot for display by hvy 
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy))+
+         geom_point()
+```
+
+```{r}
+#2. Add a facet by class and set the number of rows to 2
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy))+
+         geom_point()+
+  facet_wrap(~class, nrow = 2)
+```
+```{r}
+#3. add a facet by drv and cyl
+#4. add labels
+```
+
+```{r}
+# bar graph
+ggplot(data = gss_sm,aes(x=religion)) +
+  geom_bar()
+```
+
+```{r}
+# vary color by religion
+ggplot(data = gss_sm,aes(x=religion)) +
+  geom_bar(fill = "purple")
+```
+```{r}
+gss_sm = read.csv("gss_sm.csv")
+```
+
+
+```{r}
+# vary each by color
+ggplot(data = gss_sm,aes(x=religion)) +
+  geom_bar(aes(fill = religion))
+
+```
+
+```{r}
+ggplot(data = gss_sm,aes(x=religion, fill = religion)) +
+  geom_bar()
+```
+
+```{r}
+ggplot(data = gss_sm,aes(x=religion, fill = religion)) +
+  geom_bar(show.legend = FALSE)
+# legend
+
+```
+
+```{r}
+ggplot(data = gss_sm,aes(x=religion, fill = religion)) +
+  geom_bar()
+  
+```
+
+```{r}
+#for religion , plot a bar chart of proportion
+# to not mix up with another variable in the data 
+ggplot(data = gss_sm,aes(x=religion,y=..prop.., fill = religion)) +
+  geom_bar(show.legend = FALSE)
+# issue, not adding upto 100%
+```
+
+```{r}
+#to fix proportion add dummy variable group 1
+ggplot(data = gss_sm,aes(x=religion,y=..prop..,group = 1, fill= factor(..prop..))) +
+  geom_bar()
+```
+
+```{r}
+ggplot(data = gss_sm,aes(x=religion,y=..prop..,group = 1, fill = religion)) +
+    geom_bar()
+
+```
+```{r}
+#
+ggplot(data = gss_sm,aes(x= bigregion, fill = religion))+
+  geom_bar()
+```
+
+```{r}
+ggplot(data = gss_sm,aes(x= bigregion, fill = religion))+
+  geom_bar(position = "dodge")
+
+# convert to percentage and each color is 100%
+```
+
+```{r}
+ggplot(data = gss_sm,aes(x= bigregion, y = ..prop..,fill = religion))+
+  geom_bar(position = "fill")
+
+```
+
+```{r}
+ggplot(data = gss_sm,aes(x= bigregion, y = ..prop..,fill = factor(..x..), group = 1)) +
+  geom_bar(position = "dodge")
+```
+

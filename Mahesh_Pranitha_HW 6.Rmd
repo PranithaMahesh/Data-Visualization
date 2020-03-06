@@ -1,0 +1,104 @@
+---
+title: "HW_06_DataVisualization"
+author: "PranithaMahesh"
+date: "03/03/2020"
+output: html_document
+---
+
+
+```{r}
+rm(list = ls())
+library(socviz)
+library(ggplot2)
+```
+
+```{r}
+#0 - Load the data mortality_data.csv.
+mortality_data <- read.csv("mortality_data.csv", header = TRUE)
+
+head(mortality_data)
+```
+
+```{r}
+#1 - As a first cut of how credible the data is by age, create a histogram that shows how many rows of data we have for each attained age.
+#Is this really what we want?
+
+ggplot(data =mortality_data, aes(x = attage)) + 
+  geom_histogram()
+```
+
+
+```{r}
+#2 - Change the histogram so that the height of each bar represents the sum of the exposures in #that bin. Add a y-axis label to clarify that this is what the graph depicts.
+
+ggplot(data = mortality_data,aes(attage, weight = exposure)) + 
+  geom_histogram() +
+  ylab("Exposure") +
+  xlab("Age")
+
+```
+
+```{r}
+#3 - Now use colors to divide the histogram according to sex.
+ggplot(data = mortality_data,aes(attage, weight = exposure,  fill = sex)) + 
+  geom_histogram() +
+  ylab("Exposure") +
+  xlab("Age")
+  
+```
+
+
+```{r}
+#4 - It probably isn't worthwhile to include the cells with unknown sex. Repeat the above, but only with the subset of data for which sex is known.
+mortality_data %>% 
+  filter(sex %in% c('F','M')) %>% 
+ggplot(aes(attage, weight = exposure,  fill = sex)) + 
+  geom_histogram() +
+  ylab("Exposure") +
+  xlab("Age")
+```
+
+
+```{r}
+# 5 - Create a scatterplot that shows the actual-to-expected (A/E) ratio for each cell (hint: the A/E ratio is the actual rate mortality rate divided by the expected mortality rate. This ratio can be calculated for each row and included in the graph by simply setting the y aesthetic equal to the ratio, i.e. "y = actual_mort/expected_mort"). Have the two sexes be two different colors, and add two trend lines, one associated with each sex. In the scatterplot, exclude the data beyond age 95 and adjust the y-axis to show the range of 0-2, which is what intests us the most.
+mortality_data %>% 
+  filter(sex %in% c('F', 'M')) %>% 
+  filter(attage < 95)%>%
+ggplot(aes(x = attage,y= actual_mort/expected_mort, colour = factor(sex) )) +
+  geom_point()+
+  geom_smooth( size = 0.9 , color = "orange", se = FALSE)+
+  ylab("A/E")+
+  xlab("Age")+
+  ylim(0,2)
+ 
+```
+
+
+```{r}
+#6 - Now, split the above graph into three side-by-side graphs, one for each of the three smoking categories.
+mortality_data %>% 
+  filter(sex %in% c('F', 'M')) %>% 
+  filter(attage < 95)%>%
+ggplot(aes(x = attage,y= actual_mort/expected_mort, colour = factor(sex))) +
+  geom_point()+
+  geom_smooth( size = 0.9 , color = "orange", se = FALSE)+
+  ylab("A/E")+
+  xlab("Age")+
+  ylim(0,2)+
+  facet_wrap( ~smoker)
+```
+
+
+```{r}
+#7 - Finally, clean up the prior graph by fine-tuning the limits of the graph and adding labels.
+mortality_data %>% 
+  filter(sex %in% c('F', 'M')) %>% 
+  filter(attage < 95)%>%
+ggplot(aes(x = attage,y= actual_mort/expected_mort, colour = factor(sex), shape = factor(sex))) +
+  geom_point()+
+  geom_smooth( size = 0.9 , color = "orange", se = FALSE)+
+  ylab("A/E")+
+  xlab("Age")+
+  ylim(0,2)+
+  facet_wrap( ~smoker)
+```
